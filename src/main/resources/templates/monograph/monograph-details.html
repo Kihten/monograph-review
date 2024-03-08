@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${monograph.name}">Название монографии</title>
+    <!-- Bootstrap core CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+</head>
+</head>
+<body>
+<div th:insert="~{fragments/header :: header}" class="header"></div>
+<div class="container">
+    <div th:object="${monograph}">
+        <div class="text-center py-3">
+            <h5 th:text="${monograph.name}">Название монографии</h5>
+            <p th:text="${monograph.getCreatedAt()}"></p>
+            <div class="progress h-25" aria-valuemin="0" aria-valuemax="100">
+                <div class="progress-bar rounded-5 m-2"
+                     th:with="value=${monograph.status.ordinal() - 0}"
+                     th:classappend="${value} ? (${value > 0} ? 'text-bg-success' : 'text-bg-secondary') : 'text-bg-light'"
+                     role="progressbar" style="width: 25%;" aria-valuenow="25">
+                    <span class="progress-bar-text">Проверка заявки</span>
+                </div>
+                <div class="progress-bar rounded-5 m-2"
+                     th:with="value=${monograph.status.ordinal() - 1}"
+                     th:classappend="${value} ? (${value > 0} ? 'text-bg-success' : 'text-bg-secondary') : 'text-bg-light'"
+                     role="progressbar" style="width: 25%;" aria-valuenow="25">
+                    <span class="progress-bar-text">Подбор рецензентов</span>
+                </div>
+                <div class="progress-bar rounded-5 m-2"
+                     th:with="value=${monograph.status.ordinal() - 2}"
+                     th:classappend="${value} ? (${value > 0} ? 'text-bg-success' : 'text-bg-secondary') : 'text-bg-light'"
+                     role="progressbar" style="width: 25%;" aria-valuenow="25">
+                    <span class="progress-bar-text">Рецензирование</span>
+                </div>
+                <div class="progress-bar rounded-5 m-2"
+                     th:with="value=${monograph.status.ordinal() - 3}"
+                     th:classappend="${value} ? (${value > 0} ? 'text-bg-success' : 'text-bg-secondary') : 'text-bg-light'"
+                     role="progressbar" style="width: 25%;" aria-valuenow="25">
+                    <span>Ожидание решение НТС</span>
+                </div>
+            </div>
+        </div>
+        <div class="">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th scope="col">Файл</th>
+                    <th scope="col">Название</th>
+                    <th scope="col"></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>Служебная записка</td>
+                    <td th:text="${serviceNote.getFileName()}"></td>
+                    <td><a class="btn btn-outline-primary" th:href="@{'/download/' + *{serviceNote}}"><i
+                            class="bi bi-download" title="Скачать"></i></a>
+                        <a class="btn btn-outline-primary"><i class="bi bi-arrow-clockwise"
+                                                              title="Обновить файл"></i></a>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Титульная страница</td>
+                    <td th:text="${titlePage.getFileName()}"></td>
+                    <td><a class="btn btn-outline-primary" th:href="@{'/download/' + *{title}}"><i
+                            class="bi bi-download" title="Скачать"></i></a>
+                        <a class="btn btn-outline-primary"><i class="bi bi-arrow-clockwise"
+                                                              title="Обновить файл"></i></a>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Содержание</td>
+                    <td th:text="${content.getFileName()}"></td>
+                    <td><a class="btn btn-outline-primary" th:href="@{'/download/' + *{content}}"><i
+                            class="bi bi-download" title="Скачать"></i></a>
+                        <a class="btn btn-outline-primary"><i class="bi bi-arrow-clockwise"
+                                                              title="Обновить файл"></i></a>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Текст монографии</td>
+                    <td th:text="${text.getFileName()}"></td>
+                    <td><a class="btn btn-outline-primary" th:href="@{'/download/' + *{text}}"><i
+                            class="bi bi-download" title="Скачать"></i></a>
+                        <a class="btn btn-outline-primary"><i class="bi bi-arrow-clockwise"
+                                                              title="Обновить файл"></i></a>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Экспертное заключение</td>
+                    <td th:text="${expertConclusion.getFileName()}"></td>
+                    <td><a class="btn btn-outline-primary" th:href="@{'/download/' + *{expertConclusion}}"><i
+                            class="bi bi-download" title="Скачать"></i></a>
+                        <a class="btn btn-outline-primary"><i class="bi bi-arrow-clockwise"
+                                                              title="Обновить файл"></i></a>
+                    </td>
+                </tr>
+                <tr th:if="*{plagiarismCheck}">
+                    <td>Результат проверки на плагиат</td>
+                    <td th:text="${plagiarismCheck.getFileName()}"></td>
+                    <td><a class="btn btn-outline-primary" th:href="@{'/download/' + *{plagiarismCheck}}"><i
+                            class="bi bi-download" title="Скачать"></i></a>
+                        <a class="btn btn-outline-primary"><i class="bi bi-arrow-clockwise"
+                                                              title="Обновить файл"></i></a>
+                    </td>
+                </tr>
+                <tr sec:authorize="hasRole('SCIENCE_ANALYST')" th:if="*{plagiarismCheck == null}">
+                    <td>
+                        <form method="post" th:action="${monograph.id} + @{/uploadPlagiarismCheck}"
+                              enctype="multipart/form-data">
+                            <div class="form-group mb-3">
+                                <label class="form-label" for="plagiarismCheck">Результат проверки на плагиат: </label>
+                                <input class="form-control form-control-file"
+                                       type="file"
+                                       id="plagiarismCheck"
+                                       name="plagiarismCheck"
+                                       accept=".doc,.docx,.pdf"
+                                       th:field="*{plagiarismCheck}"
+                                />
+                            </div>
+                            <button type="submit" class="btn btn-primary">Загрузить</button>
+                        </form>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<div th:insert="~{fragments/footer :: footer}" class="footer"></div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
+</body>
+</html>

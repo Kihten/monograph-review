@@ -10,8 +10,12 @@ import java.util.Set;
 @Entity
 @Table(name = "\"role\"")
 @Data
-public class Role extends BaseEntity implements GrantedAuthority {
+public class Role implements GrantedAuthority {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    private Long id;
     @Column(name = "name", nullable = false, unique = true)
     private String name;
     @Column(name = "description", nullable = false, unique = true)

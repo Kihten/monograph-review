@@ -11,8 +11,6 @@ import ru.omstu.monographreview.models.User;
 import ru.omstu.monographreview.repositories.RoleRepository;
 import ru.omstu.monographreview.repositories.UserRepository;
 
-import java.util.Collections;
-
 @Component
 @AllArgsConstructor
 public class SetupDataLoader implements ApplicationListener<ContextRefreshedEvent> {
@@ -62,7 +60,7 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
         user.setLastName(lastName);
         user.setEmail(email);
         user.setPassword(passwordEncoder.encode(password));
-        user.setRoles(Collections.singleton(role));
+        user.getRoles().add(role);
 
         userRepository.save(user);
     }

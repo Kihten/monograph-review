@@ -9,13 +9,19 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
+@EntityListeners(UserEntityListener.class)
 @Table(name = "\"user\"")
 @Data
-public class User extends BaseEntity implements UserDetails {
+public class User implements UserDetails {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    private Long id;
     @Column(name = "first_name", nullable = false)
     private String firstName;
     @Column(name = "last_name", nullable = false)
@@ -25,8 +31,8 @@ public class User extends BaseEntity implements UserDetails {
     @Column(name = "password")
     private String password;
 
-//    @OneToOne
-//    private Author author;
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private Author author;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
@@ -34,7 +40,7 @@ public class User extends BaseEntity implements UserDetails {
             joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id")
     )
-    private Set<Role> roles;
+    private Set<Role> roles = new HashSet<>();
 
     @CreationTimestamp
     private LocalDateTime createdAt;

@@ -1,12 +1,14 @@
 package ru.omstu.monographreview.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 import ru.omstu.monographreview.models.User;
 import ru.omstu.monographreview.services.UserService;
 
@@ -22,9 +24,14 @@ public class AdminController {
     }
 
     @GetMapping("/users")
-    public String viewAllUsers(Model model) {
-        Iterable<User> users = userService.getAllUsers();
-        model.addAttribute("users", users);
+    public String viewAllUsers(Model model, @PageableDefault(sort = "id") Pageable pageable,
+                               @RequestParam(required = false) String sort) {
+        Page<User> usersPage = userService.getAllUsers(pageable);
+        model.addAttribute("users", usersPage.getContent());
+        model.addAttribute("currentPage", usersPage.getNumber());
+        model.addAttribute("totalPage", usersPage.getTotalPages());
+        model.addAttribute("totalItems", usersPage.getTotalElements());
+        model.addAttribute("sort", sort);
         return "users";
     }
 

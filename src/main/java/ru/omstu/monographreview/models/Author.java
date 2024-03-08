@@ -1,14 +1,25 @@
 package ru.omstu.monographreview.models;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
-@Data
+@Getter
+@Setter
 @Table(name = "author")
-public class Author extends BaseEntity {
+public class Author {
 
+    @Id
+    private Long id;
 
-//    @OneToMany
-//    private Iterable<Monograph> monographs;
+    @OneToOne
+    @MapsId
+    private User user;
+
+    @OneToMany(mappedBy = "author")
+    private List<Monograph> monographs = new ArrayList<>();
 }

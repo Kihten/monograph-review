@@ -8,11 +8,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/reviewed-monographs")
 public class ReviewerController {
 
-    @GetMapping()
-    public String viewReviewedMonographs() {
-        return "reviewed-monographs";
-    }
-
     @GetMapping("/review")
     public String viewReviewMonograph() {
         return "review";

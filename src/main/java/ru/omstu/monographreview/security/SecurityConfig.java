@@ -28,16 +28,15 @@ public class SecurityConfig {
         httpSecurity
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/", "/index", "/register/**", "/images/**").permitAll()
+                        .requestMatchers("/monographs/**").hasRole("USER")
                         .requestMatchers("/admin").hasRole("ADMIN")
                         .anyRequest().authenticated())
-//                .formLogin(Customizer.withDefaults())
                 .formLogin(form -> form
                         .loginPage("/login")
                         .permitAll())
                 .logout(logout -> logout
                         .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
                         .permitAll());
-//                .authenticationProvider(authenticationProvider());
         return httpSecurity.build();
     }
 
